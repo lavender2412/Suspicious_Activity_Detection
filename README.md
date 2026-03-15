@@ -57,4 +57,42 @@ A **Flask** application serves the inference pipeline with a simple UI (HTML/CSS
 
 ---
 
-## Project Structure
+## Project Structure├── data/
+│   └── Avenue_Dataset/       # Training data
+├── models/                   # Saved model weights
+├── src/                      # Detection modules
+├── static/                   # CSS and assets
+├── templates/                # Flask HTML templates
+├── .env.example              # Environment variable template
+├── requirements.txt
+└── README.md
+
+---
+
+## Setup
+```bashgit clone https://github.com/lavender2412/Suspicious_Activity_Detection.git
+cd Suspicious_Activity_Detection
+pip install -r requirements.txt
+cp .env.example .env
+Add your Twilio credentials to .env
+python app.py
+
+---
+
+## Environment VariablesTWILIO_ACCOUNT_SID=your_account_sid
+TWILIO_AUTH_TOKEN=your_auth_token
+TWILIO_FROM=+1xxxxxxxxxx
+TWILIO_TO=+1xxxxxxxxxx
+
+---
+
+## Publication
+
+**Suspicious Activity Detection in Recorded and Live Surveillance**
+2023 IEEE Region 10 Conference (TENCON) | [View on IEEE Xplore](https://ieeexplore.ieee.org/document/10322454)
+
+---
+
+## Tech Stack
+
+Python, TensorFlow, OpenCV, MediaPipe, Flask, Twilio, HTML/CSS
