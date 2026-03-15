@@ -57,7 +57,10 @@ A **Flask** application serves the inference pipeline with a simple UI (HTML/CSS
 
 ---
 
-## Project Structure├── data/
+## Project Structure
+```
+Suspicious_Activity_Detection/
+├── data/
 │   └── Avenue_Dataset/       # Training data
 ├── models/                   # Saved model weights
 ├── src/                      # Detection modules
@@ -66,7 +69,7 @@ A **Flask** application serves the inference pipeline with a simple UI (HTML/CSS
 ├── .env.example              # Environment variable template
 ├── requirements.txt
 └── README.md
-
+```
 ---
 
 ## Setup
