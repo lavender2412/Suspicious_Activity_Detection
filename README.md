@@ -1,22 +1,106 @@
-# suspicious Activity Detection
-Suspicious activity detected in recorded and live surveillance
+# Suspicious Activity Detection in Recorded and Live Surveillance
 
-A Python project that detects suspicious activity in **recorded videos and live surveillance feeds** using **head movement** cues and a simple web UI for running inference and viewing results. 
+> Published at **2023 IEEE Region 10 Conference (TENCON)** | IEEE
 
-The system uses a rule based on the **detected face distance** to decide the next step:
-- If the face distance is **≤ 200** → mark as **suspicious** (head-movement based)
-- If the face distance is **> 200** → proceed to **activity detection** 
+A dual-module real-time surveillance system that detects suspicious activity in both recorded videos and live camera feeds using deep learning and computer vision. The system dispatches automated SMS alerts via Twilio upon detection and is served through a Flask web interface.
 
 ---
 
-## How it works (decision rule)
+## How It Works
 
-For each processed segment/frame, the pipeline computes a **face distance** value from the detected face.
+The pipeline uses a distance-based decision rule to route each frame to the appropriate detection module:
 
-- **Face distance ≤ 200**  
-  Flag as **suspicious** based on head movement.
+- **Face distance ≤ 200** → Head movement module (MediaPipe face mesh + PnP)
+- **Face distance > 200** → Body gesture module (Spatiotemporal Autoencoder)
 
-- **Face distance > 200**  
-  Trigger **activity detection** (deeper analysis of the ongoing activity).
+---
 
+## Module 1: Body Gesture Anomaly Detection
 
+A spatiotemporal autoencoder trained on the [Avenue Dataset](http://www.cse.cuhk.edu.hk/leojia/projects/detectabnormal/dataset.html) to reconstruct normal video sequences and flag anomalies via reconstruction error.
+
+### Architecture
+
+| Layer | Type | Details |
+|---|---|---|
+| 1 | Conv3D | 128 filters, 11×11 kernel, stride 4, tanh |
+| 2 | Conv3D | 64 filters, 5×5 kernel, stride 2, tanh |
+| 3 | ConvLSTM2D | 64 filters, 3×3 kernel, dropout 0.4/0.3 |
+| 4 | ConvLSTM2D | 32 filters, 3×3 kernel, dropout 0.3 |
+| 5 | ConvLSTM2D | 64 filters, 3×3 kernel, dropout 0.5 |
+| 6 | Conv3DTranspose | 128 filters, 5×5 kernel, stride 2, tanh |
+| 7 | Conv3DTranspose | 1 filter, 11×11 kernel, stride 4, tanh |
+
+- **Input shape:** (None, 227, 227, 10, 1)
+- **Loss:** Mean Squared Error
+- **Optimizer:** Adam (lr=0.001, β1=0.9, β2=0.999)
+- **Anomaly threshold:** MSE > 0.0068 → flagged as suspicious
+- **Framework:** TensorFlow 2.3.1
+
+---
+
+## Module 2: Head Movement Detection
+
+Uses **MediaPipe Face Mesh** to extract 6 key landmarks from 468 detected facial points and applies **PnP (Perspective-n-Point)** problem-solving to estimate head pose in 3D space. Suspicious directional head patterns trigger an alert.
+
+---
+
+## Alert System
+
+Both modules feed into an automated **Twilio SMS alert pipeline**. When either module flags a suspicious event, a real-time SMS notification is dispatched to the configured recipient — designed for use cases including ATM security monitoring and exam supervision.
+
+---
+
+## Web Interface
+
+A **Flask** application serves the inference pipeline with a simple UI (HTML/CSS frontend in `templates/` and `static/`) for uploading recorded videos or connecting a live feed.
+
+---
+
+## Project Structure
+```
+├── data/
+│   └── Avenue_Dataset/       # Training data
+├── models/                   # Saved model weights
+├── src/                      # Detection modules
+├── static/                   # CSS and assets
+├── templates/                # Flask HTML templates
+├── .env.example              # Environment variable template
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## Setup
+```bash
+git clone https://github.com/lavender2412/Suspicious_Activity_Detection.git
+cd Suspicious_Activity_Detection
+pip install -r requirements.txt
+cp .env.example .env
+# Add your Twilio credentials to .env
+python app.py
+```
+
+---
+
+## Environment Variables
+```
+TWILIO_ACCOUNT_SID=your_account_sid
+TWILIO_AUTH_TOKEN=your_auth_token
+TWILIO_FROM=+1xxxxxxxxxx
+TWILIO_TO=+1xxxxxxxxxx
+```
+
+---
+
+## Publication
+
+**Suspicious Activity Detection in Recorded and Live Surveillance**
+2023 IEEE Region 10 Conference (TENCON) | [IEEE](https://ieeexplore.ieee.org)
+
+---
+
+## Tech Stack
+
+Python, TensorFlow, OpenCV, MediaPipe, Flask, Twilio, HTML/CSS
