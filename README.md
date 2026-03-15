@@ -1,6 +1,6 @@
 # Suspicious Activity Detection in Recorded and Live Surveillance
 
-> Published at **2023 IEEE Region 10 Conference (TENCON)** | IEEE
+> Published and presented at **2023 IEEE Region 10 Conference (TENCON)** | [View on IEEE Xplore](https://ieeexplore.ieee.org/document/10322454)
 
 A dual-module real-time surveillance system that detects suspicious activity in both recorded videos and live camera feeds using deep learning and computer vision. The system dispatches automated SMS alerts via Twilio upon detection and is served through a Flask web interface.
 
@@ -58,49 +58,3 @@ A **Flask** application serves the inference pipeline with a simple UI (HTML/CSS
 ---
 
 ## Project Structure
-```
-├── data/
-│   └── Avenue_Dataset/       # Training data
-├── models/                   # Saved model weights
-├── src/                      # Detection modules
-├── static/                   # CSS and assets
-├── templates/                # Flask HTML templates
-├── .env.example              # Environment variable template
-├── requirements.txt
-└── README.md
-```
-
----
-
-## Setup
-```bash
-git clone https://github.com/lavender2412/Suspicious_Activity_Detection.git
-cd Suspicious_Activity_Detection
-pip install -r requirements.txt
-cp .env.example .env
-# Add your Twilio credentials to .env
-python app.py
-```
-
----
-
-## Environment Variables
-```
-TWILIO_ACCOUNT_SID=your_account_sid
-TWILIO_AUTH_TOKEN=your_auth_token
-TWILIO_FROM=+1xxxxxxxxxx
-TWILIO_TO=+1xxxxxxxxxx
-```
-
----
-
-## Publication
-
-**Suspicious Activity Detection in Recorded and Live Surveillance**
-2023 IEEE Region 10 Conference (TENCON) | [IEEE](https://ieeexplore.ieee.org)
-
----
-
-## Tech Stack
-
-Python, TensorFlow, OpenCV, MediaPipe, Flask, Twilio, HTML/CSS
